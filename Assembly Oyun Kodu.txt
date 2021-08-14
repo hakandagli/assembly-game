@@ -1,0 +1,381 @@
+;
+; AssemblerApplication3.asm
+;
+; Created: 25.12.2019 22:47:51
+; Author : Hakan Dagli
+;
+; Replace with your application code
+
+.org 0
+	rjmp main
+    
+main:
+	cbi DDRD,0
+	sbi PORTD,0
+	
+	ldi r16,0x03
+	out DDRB,r16
+	ldi r16,0xff
+	out DDRC,r16
+start:
+    ;LOOPmain:
+	ldi r20,0x00
+	ldi r21,0x01
+	;loopsonmain
+	ldi r27,0x00
+	ldi r28,0x01
+	
+	;Loopmainbutton1:
+    ldi r22,0x00 ;r12
+    ldi r23,0x01 ;r11
+    ;Loopmain2buton1:
+    ldi r24,0x00 ;r10
+    ldi r25,0X01 ;r9
+	
+	ldi r16,0x7F
+	ldi r17,0x00
+	ldi r26,0x00
+	ldi r29,0x00
+	ldi r31,0xff
+	
+	out PORTC, r16
+	sbi PORTB,0
+	call waitshort
+	cbi PORTB,0
+
+	ldi r16,0x00
+	out PORTC,R16
+	sbi PORTB,1
+	call waitshort
+	cbi PORTB,1
+	
+	ldi r16,0x7f
+	sbis PIND,0
+	rjmp L1
+	rjmp start
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Loop:   
+   ADD R20,R21
+   cpi r20,0xAA
+   brne L1
+
+loopson:
+    sbis pind, 0
+	rjmp button1
+	add r27,r28
+	cpi r27,0x01
+	brne l1
+	ldi r27,0x00
+	sec
+	ror r16
+	ldi r20,0x00
+	cpi r16,0xfE
+	breq l2jump
+	rjmp l1
+l2jump:
+    rjmp l2
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Loop2:   
+   ADD R20,R21
+   cpi r20,0xAA
+   brne l2jump
+
+loop2son:
+    sbis pind, 0
+	rjmp button2
+	add r27,r28
+	cpi r27,0x01
+	brne l2
+	ldi r27,0x00
+	sec
+	rol r16
+	ldi r20,0x00
+	cpi r16,0x7F
+	breq l1
+	rjmp l2
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Loopbuton1:
+   ADD R24,R25
+   cpi R24,0x44
+   breq loopsonbuton1
+   rjmp button1
+
+loopsonbuton1:
+   ldi R24,0x00
+   ADD R22,r13
+   cpi r22,0x04
+   breq loopbutonsonson1
+   rjmp button1
+   
+loopbutonsonson1:   
+   ldi R22,0x00
+   mov r29,r26
+   mov r26,r16
+   rjmp L1
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Loopbuton2:
+   ADD R24,R25
+   cpi R24,0x44
+   breq loopsonbuton2 
+   rjmp button2
+
+loopsonbuton2:
+   ldi R24,0x00
+   ADD R22,r13
+   cpi r22,0x04
+   breq loopbutonsonson2
+   rjmp button2
+
+loopbutonsonson2:
+   ldi R22,0x00
+   mov r29,r26
+   mov r26,r16
+   rjmp L2
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+L1:
+	;ldi r16,0x7F
+
+	out PORTC,r16
+	sbi PORTB,0
+	call waitshort
+	cbi PORTB,0
+	cpi r17,0x00
+	breq d0
+	cpi r17,0x08
+	breq d1
+	cpi r17,0x09
+	breq d2
+
+d0:
+   out portc,r17
+   sbi portb,1
+   call waitshort
+   cbi portb,1
+   rjmp loop
+
+d1:
+   out PORTC, r17
+   sbi PORTB, 1
+   call waitshort
+   cbi PORTB, 1
+   rjmp loop;
+
+d2:
+   out PORTC, r17
+   sbi PORTB, 1
+   call waitshort
+   cbi PORTB, 1
+   rjmp loop
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+L2:
+	out portc,r16
+	sbi PORTB,0	
+	call waitshort
+	cbi PORTB,0
+	cpi r17,0x00
+	breq d00
+	cpi r17,0x08
+ 	breq d11
+	cpi r17,0x09
+ 	breq d22
+
+d00:
+   out portc,r17
+   sbi portb,1
+   call waitshort
+   cbi portb,1
+   rjmp loop2
+
+d11:
+   out PORTC, r17
+   sbi PORTB, 1
+   call waitshort
+   cbi PORTB, 1
+   rjmp loop2;
+
+d22:
+   out PORTC, r17
+   sbi PORTB, 1
+   call waitshort
+   cbi PORTB, 1
+   rjmp loop2;
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+button1:
+	cp r16,r26
+	breq dd
+    
+	out portc,r16
+	sbi portb,0
+	call waitshort
+	cbi portb,0
+	
+	ldi r17,0x08
+	out portc,r17
+	sbi portb,1
+	call waitshort
+	cbi portb,1
+	rjmp loopbuton1
+dd:
+	cp r26,r29
+	breq dsonuc
+
+	out portc,r16
+	sbi portb,0
+	call waitshort
+	cbi portb,0
+	
+	ldi r17,0x09
+	out portc,r17
+	sbi portb,1
+	call waitshort
+	cbi portb,1
+	rjmp loopbuton1
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+button2:
+	cp r16,r26
+	breq dd2
+	out portc,r16
+	sbi portb,0
+	call waitshort
+	cbi portb,0
+	
+	ldi r17,0x08
+	out portc,r17
+	sbi portb,1
+	call waitshort
+	cbi portb,1
+	rjmp loopbuton2
+
+dd2:
+	cp r26,r29
+	breq dsonuc
+
+	out portc,r16
+	sbi portb,0
+	call waitshort
+	cbi portb,0
+	
+	ldi r17,0x09
+	out portc,r17
+	sbi portb,1
+	call waitshort
+	cbi portb,1
+	rjmp loopbuton2
+
+;xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+LoopbutonSONUC:
+   ADD R24,R25
+   cpi R24,0xFF
+   brne dsonuc
+
+loopsonbutonSONUC:
+   ldi R24,0x00
+   ADD R22,r23
+   cpi r22,0x04
+   brne dsonuc
+   rjmp start
+;xxxxxxxxxxxxxxxxxxxxxxxxxx
+dsonuc:
+  out PORTC, r16
+  sbi PORTB, 0
+  call waitshort
+  cbi PORTB, 0
+        
+  cpi r16,0x7F
+  breq dp0
+  cpi r16,0xBF
+  breq dp1
+  cpi r16,0xDF
+  breq dp2
+  cpi r16,0xEF
+  breq dp3
+  cpi r16,0xF7
+  breq dp4
+  cpi r16,0xFB
+  breq dp5
+  cpi r16,0xFD
+  breq dp6
+  cpi r16,0xFE
+  breq dp7
+        
+dp0:
+        LDI R17,0x7E
+        out PORTC, r17
+        sbi PORTB, 1
+        call waitshort
+        cbi PORTB, 1
+        rjmp loopbutonSONUC
+
+dp1:
+        LDI R17,0x30
+        out PORTC, r17
+        sbi PORTB, 1
+        call waitshort
+        cbi PORTB, 1
+        rjmp loopbutonSONUC
+dp2:
+        LDI R17,0x6D
+        out PORTC, r17
+        sbi PORTB, 1
+        call waitshort
+        cbi PORTB, 1
+        rjmp loopbutonSONUC
+dp3:
+        LDI R17,0x79
+        out PORTC, r17
+        sbi PORTB, 1
+        call waitshort
+        cbi PORTB, 1
+        rjmp loopbutonSONUC
+dp4:
+        LDI R17,0x33
+        out PORTC, r17
+        sbi PORTB, 1
+        call waitshort
+        cbi PORTB, 1
+        rjmp loopbutonSONUC
+dp5:
+        LDI R17,0x5B
+        out PORTC, r17
+        sbi PORTB, 1
+        call waitshort
+        cbi PORTB, 1
+        rjmp loopbutonSONUC
+dp6:
+        LDI R17,0x5F
+        out PORTC, r17
+        sbi PORTB, 1
+        call waitshort
+        cbi PORTB, 1
+        rjmp loopbutonSONUC
+dp7:
+        LDI R17,0x72
+        out PORTC, r17
+        sbi PORTB, 1
+        call waitshort
+        cbi PORTB, 1
+        rjmp loopbutonSONUC
+	
+;xxxxxxxxxxxxxxxxxxxxxxx
+
+
+waitshort:				; 1.011,31 µs bekleme saglayan fonksiyonumuz
+   ldi r18,0x15 	
+   ldi r19,0x00 	
+_w0:
+   dec r19			; r19 daki degeri 1 azalt
+   brne _w0			; azaltma sonucu elde edilen deger 0 degilse _w0 a dallan
+   dec r18			; r18 daki degeri 1 azalt
+   brne _w0			; azaltma sonucu elde edilen deger 0 degilse _w0 a dallan
+  ret				; fonksiyondan geri don
+
+
+
+
+
+
+
+
+
+
+
